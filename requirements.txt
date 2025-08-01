@@ -1,0 +1,41 @@
+# Web Framework
+fastapi>=0.95.0
+uvicorn[standard]>=0.21.0
+
+# Database
+sqlalchemy>=2.0.0
+alembic>=1.10.0
+psycopg2-binary>=2.9.0
+
+# Authentication & Security
+python-jose[cryptography]>=3.3.0
+passlib[bcrypt]>=1.7.4
+python-multipart>=0.0.6
+
+# Validation
+pydantic>=1.10.0
+pydantic-settings>=2.0.0  # Add this line
+email-validator>=2.0.0
+
+# Search
+elasticsearch-dsl>=7.4.0
+
+# Utilities
+python-dotenv>=1.0.0
+tenacity>=8.0.0
+
+# Testing
+pytest>=7.0.0
+httpx>=0.24.0
+pytest-cov>=4.0.0
+
+# Rate Limiting
+slowapi>=0.1.0
+
+# Logging
+structlog>=23.0.0
+
+# Observability
+opentelemetry-api>=1.15.0
+opentelemetry-sdk>=1.15.0
+opentelemetry-exporter-otlp>=1.15.0
