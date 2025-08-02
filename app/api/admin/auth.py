@@ -2,12 +2,12 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from app.api.deps import get_auth_service
 from app.services.auth.auth_service import AuthService
-from app.schemas.auth import TokenPayload
+from app.schemas.user import TokenResponse  # Changed from TokenPayload to TokenResponse and correct import path
 
 router = APIRouter()
 
 
-@router.post("/login", response_model=TokenPayload)
+@router.post("/login", response_model=TokenResponse)  # Changed to TokenResponse
 async def login_for_access_token(
     form_data: OAuth2PasswordRequestForm = Depends(),
     auth_service: AuthService = Depends(get_auth_service),

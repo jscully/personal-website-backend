@@ -1,9 +1,9 @@
 from datetime import datetime, timedelta
 from typing import Any, Dict, Optional
+import uuid  # Change this import
 
 from jose import jwt
 from passlib.context import CryptContext
-from uuid import UUID
 
 from app.core.config import settings
 
@@ -41,7 +41,7 @@ def create_token(
         {
             "exp": expire,
             "iat": datetime.utcnow(),
-            "jti": str(UUID.uuid4()),  # Unique token ID
+            "jti": str(uuid.uuid4()),  # Fixed: use uuid.uuid4() instead of UUID.uuid4()
             "type": token_type,
         }
     )

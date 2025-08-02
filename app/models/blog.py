@@ -1,5 +1,5 @@
 # backend/app/models/blog.py
-from datetime import datetime  # Add this import
+from datetime import datetime
 from sqlalchemy import (
     Column,
     ForeignKey,
@@ -63,12 +63,22 @@ class Blog(Base, BaseModel):
     reading_time = Column(Integer)
 
     tags = relationship("Tag", secondary=blog_tag, back_populates="blogs")
+
+    # Fixed relationship - use string references to avoid circular import issues
     related_from = relationship(
         "Blog",
         secondary=related_blog,
-        primaryjoin=id == related_blog.c.source_blog_id,
-        secondaryjoin=id == related_blog.c.related_blog_id,
-        backref="related_to",
+        primaryjoin="Blog.id == related_blog.c.source_blog_id",
+        secondaryjoin="Blog.id == related_blog.c.related_blog_id",
+        back_populates="related_to"
+    )
+
+    related_to = relationship(
+        "Blog",
+        secondary=related_blog,
+        primaryjoin="Blog.id == related_blog.c.related_blog_id",
+        secondaryjoin="Blog.id == related_blog.c.source_blog_id",
+        back_populates="related_from"
     )
 
     __table_args__ = (
