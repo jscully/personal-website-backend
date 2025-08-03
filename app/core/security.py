@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 from typing import Any, Dict, Optional
-import uuid  # Change this import
+import uuid
 
 from jose import jwt
 from passlib.context import CryptContext
@@ -26,27 +26,23 @@ def create_token(
     """Create a JWT token with expiration."""
     to_encode = data.copy()
 
-    # Set token expiration
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
     elif token_type == "access":
         expire = datetime.utcnow() + timedelta(
             minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES
         )
-    else:  # refresh token
+    else:
         expire = datetime.utcnow() + timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS)
 
-    # Add standard claims
     to_encode.update(
         {
             "exp": expire,
             "iat": datetime.utcnow(),
-            "jti": str(uuid.uuid4()),  # Fixed: use uuid.uuid4() instead of UUID.uuid4()
+            "jti": str(uuid.uuid4()),
             "type": token_type,
         }
     )
-
-    # Create token
     encoded_jwt = jwt.encode(
         to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM
     )
@@ -70,5 +66,5 @@ def decode_token(token: str) -> Dict[str, Any]:
             token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]
         )
         return payload
-    except jwt.PyJWTError:
-        raise ValueError("Invalid token")
+    except Exception as e:
+        raise ValueError(f"Invalid token: {str(e)}")

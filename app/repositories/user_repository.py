@@ -14,3 +14,6 @@ class UserRepository:
         if user:
             setattr(user, "last_login", timestamp)
             self.db.commit()
+
+    def get_by_id(self, user_id: str):
+        return self.db.query(User).filter(User.id == user_id).first()
