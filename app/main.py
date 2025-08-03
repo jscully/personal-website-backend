@@ -4,7 +4,7 @@ from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 
-from app.api.admin import auth
+from app.api.routers.admin import auth
 from app.core.config import settings
 from app.core.rate_limiting import limiter, rate_limit_exceeded_handler
 

@@ -1,0 +1,70 @@
+from datetime import datetime
+from typing import Optional
+from sqlalchemy.orm import Session
+from jose import JWTError  # Add this import
+from app.data.repositories.user_repository import UserRepository
+from app.core.security import verify_password, create_access_token, create_refresh_token, decode_token
+from app.api.schemas.user import TokenResponse
+from app.api.schemas.auth import TokenPayload
+from app.core.config import settings  # Also make sure this is imported
+
+class AuthService:
+    def __init__(self, db: Session, user_repository: Optional[UserRepository] = None):
+        self.db = db
+        self.user_repository = user_repository or UserRepository(db)
+
+    def authenticate_user(self, email: str, password: str):
+        user = self.user_repository.get_by_email(email)
+
+        if not user or not verify_password(password, user.password_hash):
+            return None
+        if not bool(user.is_active):
+            return None
+        return user
+
+    def login(self, user_id: str):
+        self.user_repository.update_last_login(user_id, datetime.utcnow())
+        access_token = create_access_token({"sub": str(user_id)})
+        refresh_token = create_refresh_token({"sub": str(user_id)})
+
+        return {
+            "access_token": access_token,
+            "token_type": "bearer",
+            "expires_in": 3600,
+            "refresh_token": refresh_token,
+        }
+
+    def refresh_tokens(self, refresh_token: str) -> TokenResponse:
+        """Validate refresh token and create new access/refresh tokens"""
+        try:
+            payload = decode_token(refresh_token)
+
+            token_data = TokenPayload(**payload)
+
+            if token_data.type != "refresh":
+                raise ValueError("Invalid token type")
+
+            current_time = datetime.utcnow()
+            exp_time = datetime.fromtimestamp(token_data.exp)
+
+            if exp_time < current_time:
+                raise ValueError("Token expired")
+
+            user = self.user_repository.get_by_id(token_data.sub)
+
+            if not user or not bool(user.is_active):
+                raise ValueError("User not found or inactive")
+
+            access_token = create_access_token({"sub": str(user.id)})
+            new_refresh_token = create_refresh_token({"sub": str(user.id)})
+
+            response = TokenResponse(
+                access_token=access_token,
+                token_type="bearer",
+                expires_in=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60,
+                refresh_token=new_refresh_token
+            )
+            return response
+
+        except (JWTError, ValueError, KeyError) as e:
+            raise ValueError(f"Invalid refresh token: {str(e)}")

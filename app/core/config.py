@@ -58,14 +58,11 @@ class Settings(BaseSettings):
 
     model_config = SettingsConfigDict(
         case_sensitive=True,
+        env_file=".env.development",
         env_file_encoding="utf-8",
         extra="ignore"
     )
 
-
-# Dynamically set the env_file based on ENVIRONMENT
-environment = os.getenv("ENVIRONMENT", "development")
-Settings.model_config["env_file"] = f".env.{environment}"
 
 settings = Settings()
 
