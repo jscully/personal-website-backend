@@ -12,7 +12,6 @@ class Settings(BaseSettings):
     API_V1_STR: str = "/api"
 
     SECRET_KEY: str = os.getenv("SECRET_KEY", secrets.token_urlsafe(32))
-    print(f"DEBUG: Using SECRET_KEY: {SECRET_KEY[:10]}...")  # Just first 10 chars for security
 
     ACCESS_TOKEN_EXPIRE_MINUTES: int = int(
         os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", 60 * 24 * 8)
