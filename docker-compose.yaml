@@ -12,16 +12,19 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
-  elasticsearch:
-    image: elasticsearch:7.17.0
+  opensearch:
+    image: opensearchproject/opensearch:2.11.0
+    container_name: opensearch
     environment:
       - discovery.type=single-node
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - DISABLE_SECURITY_PLUGIN=true
+      - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m"
     ports:
       - "9200:9200"
+      - "9600:9600"
     volumes:
-      - elasticsearch_data:/usr/share/elasticsearch/data
+      - opensearch-data:/usr/share/opensearch/data
 
 volumes:
   postgres_data:
-  elasticsearch_data:
+  opensearch-data:

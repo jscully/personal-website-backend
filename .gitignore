@@ -33,5 +33,4 @@ media/
 
 *.bak
 
-alembic.ini
 pyproject.toml

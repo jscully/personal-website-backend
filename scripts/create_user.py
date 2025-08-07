@@ -6,21 +6,18 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from app.core.security import get_password_hash
-from app.repositories.session import SessionLocal  # Fixed path
-from app.models.user import User  # This might also need fixing
+from app.data.repositories.session import SessionLocal
+from app.data.models.user import User
 
 def create_test_user():
-    # Create database session
     db = SessionLocal()
 
     try:
-        # Check if user already exists
         existing_user = db.query(User).filter(User.email == "admin@example.com").first()
         if existing_user:
             print("User already exists!")
             return
 
-        # Create new user with hashed password
         hashed_password = get_password_hash("password123")
         new_user = User(
             email="admin@example.com",

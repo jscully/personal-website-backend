@@ -6,11 +6,11 @@ import os
 import sys
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from app.models.base import Base
-from app.models.blog import Blog
-from app.models.tag import Tag
-from app.models.contact import Contact
-from app.models.user import User
+from app.data.models import Base
+from app.data.models import Blog
+from app.data.models import Tag
+from app.data.models import Contact
+from app.data.models import User
 
 config = context.config
 
