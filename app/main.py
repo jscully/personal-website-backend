@@ -5,6 +5,7 @@ from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 
 from app.api.routers.admin import auth
+from app.api.routers.public import blogs
 from app.core.config import settings
 from app.core.rate_limiting import limiter, rate_limit_exceeded_handler
 
@@ -14,11 +15,9 @@ app = FastAPI(
     version="0.1.0",
 )
 
-# Add rate limiting
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, rate_limit_exceeded_handler)
 
-# CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.CORS_ORIGINS,
@@ -28,6 +27,7 @@ app.add_middleware(
 )
 
 app.include_router(auth.router, prefix="/api/admin/auth", tags=["admin"])
+app.include_router(blogs.router, prefix="/api", tags=["blogs"])
 
 @app.get("/")
 @limiter.limit("100/minute")
